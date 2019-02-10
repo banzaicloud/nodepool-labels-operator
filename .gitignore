@@ -1,0 +1,20 @@
+/bin/
+/build/
+/config.*
+!config.yaml.dist
+/.docker/
+/docker-compose.override.yml
+/.env
+/.env.test
+/vendor/
+/.licensei.cache
+
+# IDE integration
+/.idea/*
+!/.idea/copyright/
+!/.idea/*.iml
+!/.idea/externalDependencies.xml
+!/.idea/go.imports.xml
+!/.idea/modules.xml
+!/.idea/runConfigurations/
+!/.idea/scopes/

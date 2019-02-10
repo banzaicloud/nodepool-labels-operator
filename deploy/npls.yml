@@ -1,0 +1,7 @@
+apiVersion: banzaicloud.io/v1alpha1
+kind: NodePoolLabelSet
+metadata:
+  name: test-pool-2
+spec:
+  labels:
+    test-label: "test-value"

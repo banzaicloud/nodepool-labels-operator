@@ -1,0 +1,20 @@
+log:
+  format: "logfmt"
+  level: "debug"
+
+healthcheck:
+  listenAddress: ":8882"
+  endpoint: "/healthz"
+
+labeler:
+  managedLabelsAnnotation: "nodepool.banzaicloud.io/managed-labels"
+  forbiddenLabelDomains:
+  - "kubernetes.io"
+  - "google.com"
+
+controller:
+  namespace: "default"
+  nodepoolNameLabels:
+  - "nodepool.banzaicloud.io/name"
+  - "cloud.google.com/gke-nodepool"
+  - "agentpool"

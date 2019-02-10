@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodepool-labels-operator
+  labels:
+    app: nodepool-labels-operator
+spec:
+  selector:
+    matchLabels:
+      app: nodepool-labels-operator
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nodepool-labels-operator
+    spec:
+      serviceAccountName: nodepool-labels-operator
+      containers:
+      - name: ctrl
+        image: banzaicloud/nodepool-labels-operator:master
+        imagePullPolicy: Always
+        resources:
