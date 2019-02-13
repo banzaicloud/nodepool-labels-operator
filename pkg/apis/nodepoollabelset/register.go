@@ -15,5 +15,5 @@
 package nodepoollabelset
 
 const (
-	GroupName = "banzaicloud.io"
+	GroupName = "labels.banzaicloud.io"
 )

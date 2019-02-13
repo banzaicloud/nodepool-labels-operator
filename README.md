@@ -23,7 +23,7 @@ helm install banzai-stable/nodepool-labels-operator
 
 ```bash
 cat <<EOF | kubectl create -f -
-apiVersion: banzaicloud.io/v1alpha1
+apiVersion: labels.banzaicloud.io/v1alpha1
 kind: NodePoolLabelSet
 metadata:
   name: test-pool-2
