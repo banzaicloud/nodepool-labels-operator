@@ -18,7 +18,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/goph/emperror"
+	"emperror.dev/emperror"
+	"emperror.dev/errors"
 
 	"github.com/banzaicloud/nodepool-labels-operator/internal/platform/log"
 )
@@ -39,14 +40,18 @@ func newErrorHandler(logger log.Logger) emperror.Handler {
 	loggerHandler := NewHandler(logger)
 
 	return emperror.HandlerFunc(func(err error) {
-		if stackTrace, ok := emperror.StackTrace(err); ok && len(stackTrace) > 0 {
-			frame := stackTrace[0]
+		var stackTracer interface{ StackTrace() errors.StackTrace }
+		if errors.As(err, &stackTracer) {
+			stackTrace := stackTracer.StackTrace()
+			if len(stackTrace) > 0 {
+				frame := stackTrace[0]
 
-			err = emperror.With(
-				err,
-				"func", fmt.Sprintf("%n", frame), // nolint: govet
-				"file", fmt.Sprintf("%v", frame), // nolint: govet
-			)
+				err = emperror.With(
+					err,
+					"func", fmt.Sprintf("%n", frame), // nolint: govet
+					"file", fmt.Sprintf("%v", frame), // nolint: govet
+				)
+			}
 		}
 
 		loggerHandler.Handle(err)

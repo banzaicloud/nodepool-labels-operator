@@ -17,8 +17,8 @@ package healthcheck
 import (
 	"net/http"
 
+	"emperror.dev/emperror"
 	"github.com/gin-gonic/gin"
-	"github.com/goph/emperror"
 
 	"github.com/banzaicloud/nodepool-labels-operator/internal/platform/log"
 )

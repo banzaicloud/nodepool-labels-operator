@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/goph/emperror"
+	"emperror.dev/emperror"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	yaml "gopkg.in/yaml.v2"

@@ -1,6 +1,9 @@
 module github.com/banzaicloud/nodepool-labels-operator
 
 require (
+	emperror.dev/emperror v0.21.0
+	emperror.dev/errors v0.4.1
+	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/gin-gonic/gin v1.3.1-0.20190204012700-5acf6601170b
 	github.com/gogo/protobuf v1.2.0 // indirect

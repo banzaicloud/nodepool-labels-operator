@@ -15,7 +15,8 @@
 package errorhandler
 
 import (
-	"github.com/goph/emperror"
+	"emperror.dev/errors"
+	"emperror.dev/errors/utils/keyval"
 
 	"github.com/banzaicloud/nodepool-labels-operator/internal/platform/log"
 )
@@ -34,24 +35,22 @@ func (h *handler) Handle(err error) {
 	var ctx map[string]interface{}
 
 	// Extract context from the error and attach it to the log
-	if kvs := emperror.Context(err); len(kvs) > 0 {
-		ctx = ToMap(kvs)
+	if details := errors.GetDetails(err); len(details) > 0 {
+		ctx = keyval.ToMap(details)
 	}
 
 	logger := h.logger.WithFields(log.Fields(ctx))
 
-	type errorCollection interface {
-		Errors() []error
-	}
+	if errs := errors.GetErrors(err); len(errs) > 1 {
+		for _, err := range errs {
+			var ctx map[string]interface{}
 
-	if errs, ok := err.(errorCollection); ok {
-		for _, e := range errs.Errors() {
-			ctx = nil
 			// Extract context from the error and attach it to the log
-			if kvs := emperror.Context(e); len(kvs) > 0 {
-				ctx = ToMap(kvs)
+			if details := errors.GetDetails(err); len(details) > 0 {
+				ctx = keyval.ToMap(details)
 			}
-			h.logger.WithFields(log.Fields(ctx)).Error(e.Error())
+
+			h.logger.WithFields(log.Fields(ctx)).Error(err.Error())
 		}
 	} else {
 		logger.Error(err.Error())
