@@ -20,7 +20,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/goph/emperror"
+	"emperror.dev/emperror"
 	"github.com/pkg/errors"
 	api_v1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -34,7 +34,7 @@ import (
 	"k8s.io/client-go/util/workqueue"
 
 	"github.com/banzaicloud/nodepool-labels-operator/internal/platform/log"
-	v1alpha1 "github.com/banzaicloud/nodepool-labels-operator/pkg/apis/nodepoollabelset/v1alpha1"
+	"github.com/banzaicloud/nodepool-labels-operator/pkg/apis/nodepoollabelset/v1alpha1"
 	npls_clientset "github.com/banzaicloud/nodepool-labels-operator/pkg/client/clientset/versioned"
 	informers "github.com/banzaicloud/nodepool-labels-operator/pkg/client/informers/externalversions/nodepoollabelset/v1alpha1"
 	"github.com/banzaicloud/nodepool-labels-operator/pkg/labeler"
