@@ -15,10 +15,6 @@
 
 package log
 
-import (
-	"github.com/goph/logur"
-)
-
 type Logger interface {
 	Trace(args ...interface{})
 	Debug(args ...interface{})
@@ -40,7 +36,7 @@ type Logger interface {
 }
 
 // Fields is an alias to log.Fields for easier usage.
-type Fields = logur.Fields
+type Fields = map[string]interface{}
 
 // NewLogger creates a new logger.
 func NewLogger(config Config) Logger {
