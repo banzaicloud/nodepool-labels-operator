@@ -20,6 +20,13 @@ type Manager struct {
 	clientset clientset.Interface
 }
 
+func NewManager(client clientset.Interface, namespace string) *Manager {
+	return &Manager{
+		namespace: namespace,
+		clientset: client,
+	}
+}
+
 func NewNPLSManager(k8sConfig *rest.Config, namespace string) (*Manager, error) {
 	clientset, err := clientset.NewForConfig(k8sConfig)
 	if err != nil {
