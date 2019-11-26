@@ -1,5 +1,7 @@
 module github.com/banzaicloud/nodepool-labels-operator
 
+go 1.13
+
 require (
 	emperror.dev/emperror v0.21.0
 	emperror.dev/errors v0.4.1
