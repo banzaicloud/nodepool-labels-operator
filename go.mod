@@ -3,8 +3,8 @@ module github.com/banzaicloud/nodepool-labels-operator
 go 1.13
 
 require (
-	emperror.dev/emperror v0.21.0
-	emperror.dev/errors v0.4.1
+	emperror.dev/emperror v0.21.3
+	emperror.dev/errors v0.4.3
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/gin-gonic/gin v1.3.1-0.20190204012700-5acf6601170b
@@ -21,7 +21,6 @@ require (
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
-	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.3.1

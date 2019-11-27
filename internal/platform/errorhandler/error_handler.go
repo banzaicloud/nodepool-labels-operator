@@ -46,7 +46,7 @@ func newErrorHandler(logger log.Logger) emperror.Handler {
 			if len(stackTrace) > 0 {
 				frame := stackTrace[0]
 
-				err = emperror.With(
+				err = errors.WithDetails(
 					err,
 					"func", fmt.Sprintf("%n", frame), // nolint: govet
 					"file", fmt.Sprintf("%v", frame), // nolint: govet

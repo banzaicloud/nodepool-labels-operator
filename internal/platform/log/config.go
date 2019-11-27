@@ -15,7 +15,7 @@
 package log
 
 import (
-	"github.com/pkg/errors"
+	"emperror.dev/errors"
 )
 
 // Config holds details necessary for logging.
