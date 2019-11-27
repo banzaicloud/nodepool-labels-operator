@@ -1,9 +1,8 @@
-emperror.dev/emperror v0.21.0 h1:PSHB9+gBiF4ZfAnzVMwyq15bmLYXeAYDe0vgPh1Pdkg=
-emperror.dev/emperror v0.21.0/go.mod h1:4g6TX9Sre43stmrtzw3McpiY3KuMLalG/xZ2agmpdT4=
-emperror.dev/errors v0.4.0 h1:pRN4MFgT0BrWGpijjX+EIP/xX4WnZ7rhJntrGkZhTLY=
-emperror.dev/errors v0.4.0/go.mod h1:cA5SMsyzo+KXq997DKGK+lTV1DGx5TXLQUNtYe9p2p0=
-emperror.dev/errors v0.4.1 h1:L34hKwpXDjGLrtkN0VOjrj0y4ZFyy9/Y+EhFSfMhot0=
+emperror.dev/emperror v0.21.3 h1:/S3xa/ljmXKTsrxN8ttCE/eq7fmY/4H4xyqbiunObss=
+emperror.dev/emperror v0.21.3/go.mod h1:aeDoz3ERR3yJblyjfKojXoFFsXSd6K8Wfd4Zb1eEbZg=
 emperror.dev/errors v0.4.1/go.mod h1:cA5SMsyzo+KXq997DKGK+lTV1DGx5TXLQUNtYe9p2p0=
+emperror.dev/errors v0.4.3 h1:yfhVxX1vzHgCDXh0KL+gVKfKhXlJCabmc79jS6QQuus=
+emperror.dev/errors v0.4.3/go.mod h1:cA5SMsyzo+KXq997DKGK+lTV1DGx5TXLQUNtYe9p2p0=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=

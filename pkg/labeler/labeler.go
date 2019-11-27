@@ -19,6 +19,7 @@ import (
 	"strings"
 
 	"emperror.dev/emperror"
+	"emperror.dev/errors"
 	api_v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
@@ -64,30 +65,30 @@ func (l *Labeler) SyncLabels(node *api_v1.Node, labelsToSet map[string]string) e
 
 	oldData, err := json.Marshal(*node)
 	if err != nil {
-		return emperror.Wrap(err, "could not marshal old node object")
+		return errors.WrapIf(err, "could not marshal old node object")
 	}
 
 	nodeLabels, managedLabels := l.getDesiredLabels(node, labelsToSet)
 	annotations, err := l.updateAnnotations(node.GetAnnotations(), managedLabels)
 	if err != nil {
-		return emperror.Wrap(err, "could not update annotations")
+		return errors.WrapIf(err, "could not update annotations")
 	}
 	node.SetAnnotations(annotations)
 	node.SetLabels(nodeLabels)
 
 	newData, err := json.Marshal(*node)
 	if err != nil {
-		return emperror.Wrap(err, "could not marshal new node object")
+		return errors.WrapIf(err, "could not marshal new node object")
 	}
 
 	patch, err := strategicpatch.CreateTwoWayMergePatch(oldData, newData, *node)
 	if err != nil {
-		return emperror.Wrap(err, "could not create two way merge patch")
+		return errors.WrapIf(err, "could not create two way merge patch")
 	}
 
 	_, err = l.clientset.CoreV1().Nodes().Patch(node.Name, types.MergePatchType, patch)
 	if err != nil {
-		return emperror.Wrap(err, "could not patch node")
+		return errors.WrapIf(err, "could not patch node")
 	}
 
 	return nil
@@ -100,7 +101,7 @@ func (l *Labeler) updateAnnotations(currentAnnotations map[string]string, manage
 
 	managedLabelsJSON, err := json.Marshal(managedLabels)
 	if err != nil {
-		return currentAnnotations, emperror.Wrap(err, "could not marshal managed labels to annotation")
+		return currentAnnotations, errors.WrapIf(err, "could not marshal managed labels to annotation")
 	}
 	currentAnnotations[l.managedLabelsAnnotation] = string(managedLabelsJSON)
 
@@ -149,7 +150,7 @@ func (l *Labeler) getManagedLabels(node *api_v1.Node) ([]string, error) {
 
 	err := json.Unmarshal([]byte(node.GetAnnotations()[l.managedLabelsAnnotation]), &labels)
 	if err != nil {
-		return labels, emperror.Wrap(err, "could not unmarshal annotation")
+		return labels, errors.WrapIf(err, "could not unmarshal annotation")
 	}
 
 	return labels, nil

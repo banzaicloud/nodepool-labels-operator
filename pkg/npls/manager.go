@@ -1,8 +1,7 @@
 package npls
 
 import (
-	"emperror.dev/emperror"
-	"github.com/pkg/errors"
+	"emperror.dev/errors"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -30,7 +29,7 @@ func NewManager(client clientset.Interface, namespace string) *Manager {
 func NewNPLSManager(k8sConfig *rest.Config, namespace string) (*Manager, error) {
 	clientset, err := clientset.NewForConfig(k8sConfig)
 	if err != nil {
-		return nil, emperror.Wrap(err, "could not get k8s npls clientset")
+		return nil, errors.WrapIf(err, "could not get k8s npls clientset")
 	}
 
 	return &Manager{
@@ -42,7 +41,7 @@ func NewNPLSManager(k8sConfig *rest.Config, namespace string) (*Manager, error) 
 func (m *Manager) Get(name string) (LabelSet, error) {
 	npls, err := m.clientset.LabelsV1alpha1().NodePoolLabelSets(m.namespace).Get(name, v1.GetOptions{})
 	if err != nil {
-		return nil, emperror.WrapWith(err, "could not get npls", "name", name)
+		return nil, errors.WrapIfWithDetails(err, "could not get npls", "name", name)
 	}
 
 	return LabelSet(npls.Spec.Labels), nil
@@ -51,7 +50,7 @@ func (m *Manager) Get(name string) (LabelSet, error) {
 func (m *Manager) GetAll() (NodepoolLabelSets, error) {
 	nplss, err := m.clientset.LabelsV1alpha1().NodePoolLabelSets(m.namespace).List(v1.ListOptions{})
 	if err != nil {
-		return nil, emperror.Wrap(err, "could not list npls resources")
+		return nil, errors.WrapIf(err, "could not list npls resources")
 	}
 
 	sets := make(NodepoolLabelSets)
@@ -63,22 +62,23 @@ func (m *Manager) GetAll() (NodepoolLabelSets, error) {
 }
 
 func (m *Manager) Sync(sets NodepoolLabelSets) error {
-	merr := emperror.NewMultiErrorBuilder()
+	errs := make([]error, 0, len(sets))
+
 	for poolName, labelSet := range sets {
 		if len(labelSet) == 0 {
 			err := m.Delete(poolName)
 			if err != nil {
-				merr.Add(err)
+				errs = append(errs, err)
 			}
 			continue
 		}
 		err := m.UpdateOrCreate(poolName, labelSet)
 		if err != nil {
-			merr.Add(err)
+			errs = append(errs, err)
 		}
 	}
 
-	return merr.ErrOrNil()
+	return errors.Combine(errs...)
 }
 
 func (m *Manager) UpdateOrCreate(name string, labelSet LabelSet) error {
@@ -98,13 +98,13 @@ func (m *Manager) UpdateOrCreate(name string, labelSet LabelSet) error {
 func (m *Manager) Update(name string, labelSet LabelSet) error {
 	npls, err := m.clientset.LabelsV1alpha1().NodePoolLabelSets(m.namespace).Get(name, v1.GetOptions{})
 	if err != nil {
-		return emperror.WrapWith(err, "could not get npls", "name", name)
+		return errors.WrapIfWithDetails(err, "could not get npls", "name", name)
 	}
 
 	npls.Spec.Labels = labelSet
 	_, err = m.clientset.LabelsV1alpha1().NodePoolLabelSets(m.namespace).Update(npls)
 	if err != nil {
-		return emperror.WrapWith(err, "could not update npls", "name", name)
+		return errors.WrapIfWithDetails(err, "could not update npls", "name", name)
 	}
 
 	return nil
@@ -117,7 +117,7 @@ func (m *Manager) Delete(name string) error {
 	}
 
 	if err != nil {
-		return emperror.WrapWith(err, "could not delete npls", "name", name)
+		return errors.WrapIfWithDetails(err, "could not delete npls", "name", name)
 	}
 
 	return nil
@@ -137,7 +137,7 @@ func (m *Manager) Create(name string, labelSet LabelSet) error {
 	)
 
 	if err != nil {
-		return emperror.WrapWith(err, "could not create npls", "name", name)
+		return errors.WrapIfWithDetails(err, "could not create npls", "name", name)
 	}
 
 	return nil

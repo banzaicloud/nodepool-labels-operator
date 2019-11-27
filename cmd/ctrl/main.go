@@ -19,6 +19,7 @@ import (
 	"os"
 
 	"emperror.dev/emperror"
+	"emperror.dev/errors"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	yaml "gopkg.in/yaml.v2"
@@ -53,7 +54,7 @@ func main() {
 		c := viper.AllSettings()
 		y, err := yaml.Marshal(c)
 		if err != nil {
-			panic(emperror.Wrap(err, "failed to dump configuration"))
+			panic(errors.WrapIf(err, "failed to dump configuration"))
 		}
 		fmt.Print(string(y))
 		os.Exit(0)

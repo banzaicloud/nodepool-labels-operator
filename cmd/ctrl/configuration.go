@@ -20,7 +20,7 @@ import (
 	"reflect"
 	"strings"
 
-	"emperror.dev/emperror"
+	"emperror.dev/errors"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
@@ -59,12 +59,12 @@ type Config struct {
 func (c Config) Validate() error {
 	err := c.Log.Validate()
 	if err != nil {
-		return emperror.Wrap(err, "could not validate log config")
+		return errors.WrapIf(err, "could not validate log config")
 	}
 
 	err = c.Healthcheck.Validate()
 	if err != nil {
-		return emperror.Wrap(err, "could not validate healthcheck config")
+		return errors.WrapIf(err, "could not validate healthcheck config")
 	}
 
 	return nil
@@ -76,17 +76,17 @@ func configure() {
 
 	err := viper.ReadInConfig()
 	if _, ok := err.(viper.ConfigFileNotFoundError); err != nil && !ok {
-		panic(emperror.Wrap(err, "failed to read configuration"))
+		panic(errors.WrapIf(err, "failed to read configuration"))
 	}
 	bindEnvs(configuration)
 	err = viper.Unmarshal(&configuration)
 	if err != nil {
-		panic(emperror.Wrap(err, "failed to unmarshal configuration"))
+		panic(errors.WrapIf(err, "failed to unmarshal configuration"))
 	}
 
 	err = configuration.Validate()
 	if err != nil {
-		panic(emperror.Wrap(err, "cloud not validate configuration"))
+		panic(errors.WrapIf(err, "cloud not validate configuration"))
 	}
 }
 
@@ -123,7 +123,7 @@ func bindEnvs(iface interface{}, parts ...string) {
 		default:
 			err := viper.BindEnv(strings.Join(append(parts, tv), "."))
 			if err != nil {
-				panic(emperror.Wrap(err, "could not bind env variable"))
+				panic(errors.WrapIf(err, "could not bind env variable"))
 			}
 		}
 	}

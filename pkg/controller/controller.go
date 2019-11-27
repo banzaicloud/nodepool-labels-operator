@@ -21,7 +21,7 @@ import (
 	"time"
 
 	"emperror.dev/emperror"
-	"github.com/pkg/errors"
+	"emperror.dev/errors"
 	api_v1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	meta_v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -62,12 +62,12 @@ type Controller struct {
 func New(config Config, k8sConfig *rest.Config, labeler *labeler.Labeler, logger log.Logger, errorHandler emperror.Handler) (*Controller, error) {
 	clientset, err := kubernetes.NewForConfig(k8sConfig)
 	if err != nil {
-		return nil, emperror.Wrap(err, "could not get k8s clientset")
+		return nil, errors.WrapIf(err, "could not get k8s clientset")
 	}
 
 	nplsClientset, err := npls_clientset.NewForConfig(k8sConfig)
 	if err != nil {
-		return nil, emperror.Wrap(err, "could not get k8s npls clientset")
+		return nil, errors.WrapIf(err, "could not get k8s npls clientset")
 	}
 
 	return &Controller{
@@ -101,7 +101,7 @@ func (c *Controller) Start() error {
 
 	err := c.run(10, stopCh)
 	if err != nil {
-		return emperror.Wrap(err, "could not observe")
+		return errors.WrapIf(err, "could not observe")
 	}
 
 	sigterm := make(chan os.Signal, 1)
@@ -154,14 +154,14 @@ func (c *Controller) processNextWorkItem() bool {
 		var ok bool
 		if event, ok = obj.(*Event); !ok {
 			c.workqueue.Forget(obj)
-			c.errorHandler.Handle(emperror.With(errors.New("expected string in workqueue"), "value", obj))
+			c.errorHandler.Handle(errors.NewWithDetails("expected string in workqueue", "value", obj))
 			return nil
 		}
 
 		if err := c.processItem(event); err != nil {
 			// Put the item back on the workqueue to handle any transient errors.
 			c.workqueue.AddRateLimited(event)
-			return emperror.WrapWith(err, "could not sync; requeuing", "key", event.key)
+			return errors.WrapIfWithDetails(err, "could not sync; requeuing", "key", event.key)
 		}
 
 		c.workqueue.Forget(obj)
@@ -183,7 +183,7 @@ func (c *Controller) processItem(event *Event) error {
 
 	namespace, name, err := cache.SplitMetaNamespaceKey(event.key)
 	if err != nil {
-		return emperror.WrapWith(err, "could not split key", "key", event.key)
+		return errors.WrapIfWithDetails(err, "could not split key", "key", event.key)
 	}
 
 	if namespace != "" && namespace != c.namespace {
@@ -196,14 +196,14 @@ func (c *Controller) processItem(event *Event) error {
 		if event.eventType == AddEvent || event.eventType == UpdateEvent {
 			npls, err = c.nplsInformer.Lister().NodePoolLabelSets(namespace).Get(name)
 			if err != nil {
-				return emperror.WrapWith(err, "could not get npls from store", "key", event.key)
+				return errors.WrapIfWithDetails(err, "could not get npls from store", "key", event.key)
 			}
 			labelsToSet = npls.Spec.Labels
 		}
 
 		nodes, err := c.getNodesOfANodepool(name)
 		if err != nil {
-			return emperror.WrapWith(err, "could not get nodes for a nodepool", "nodepoolName", name)
+			return errors.WrapIfWithDetails(err, "could not get nodes for a nodepool", "nodepoolName", name)
 		}
 		for _, node := range nodes {
 			err := c.labeler.SyncLabels(&node, labelsToSet)
@@ -214,7 +214,7 @@ func (c *Controller) processItem(event *Event) error {
 	case NodeResourceType:
 		node, err := c.nodeInformer.Lister().Get(name)
 		if err != nil {
-			return emperror.WrapWith(err, "could not get node from store", "node", name)
+			return errors.WrapIfWithDetails(err, "could not get node from store", "node", name)
 		}
 		npls, err := c.getRelatedNPLSForNode(node)
 		if k8serrors.IsNotFound(errors.Cause(err)) {
@@ -222,7 +222,7 @@ func (c *Controller) processItem(event *Event) error {
 			npls = nil
 		}
 		if err != nil {
-			return emperror.WrapWith(err, "could not get related npls for a node", "node", name)
+			return errors.WrapIfWithDetails(err, "could not get related npls for a node", "node", name)
 		}
 		if npls != nil {
 			labelsToSet = npls.Spec.Labels
@@ -243,7 +243,7 @@ func (c *Controller) getRelatedNPLSForNode(node *api_v1.Node) (*v1alpha1.NodePoo
 
 	npls, err := c.nplsClientset.LabelsV1alpha1().NodePoolLabelSets(c.namespace).Get(nodepoolName, meta_v1.GetOptions{})
 	if err != nil {
-		return nil, emperror.WrapWith(err, "could not get npls", "name", nodepoolName)
+		return nil, errors.WrapIfWithDetails(err, "could not get npls", "name", nodepoolName)
 	}
 
 	return npls, nil
@@ -252,7 +252,7 @@ func (c *Controller) getRelatedNPLSForNode(node *api_v1.Node) (*v1alpha1.NodePoo
 func (c *Controller) getNodesOfANodepool(name string) ([]api_v1.Node, error) {
 	nodes, err := c.clientset.CoreV1().Nodes().List(meta_v1.ListOptions{})
 	if err != nil {
-		return nil, emperror.Wrap(err, "could not list nodes")
+		return nil, errors.WrapIf(err, "could not list nodes")
 	}
 
 	_nodes := make([]api_v1.Node, 0)
