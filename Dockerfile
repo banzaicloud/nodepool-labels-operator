@@ -1,8 +1,8 @@
-ARG GO_VERSION=1.11
+ARG GO_VERSION=1.13
 
 FROM golang:${GO_VERSION}-alpine AS builder
 
-RUN apk add --update --no-cache ca-certificates=20190108-r0 make=4.2.1-r2 git=2.20.1-r0 curl=7.63.0-r0
+RUN apk add --update --no-cache ca-certificates make git curl
 
 ARG PACKAGE=github.com/banzaicloud/nodepool-labels-operator
 
@@ -10,6 +10,14 @@ RUN mkdir -p /${PACKAGE}
 WORKDIR /${PACKAGE}
 
 COPY Makefile /${PACKAGE}/
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT=""
+
+ENV GOOS=${TARGETOS}
+ENV GOARCH=${TARGETARCH}
+ENV GOARM=${TARGETVARIANT}
 
 COPY . /${PACKAGE}
 RUN BUILD_DIR='' BINARY_NAME=app make build-release
