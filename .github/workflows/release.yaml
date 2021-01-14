@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - chart/[0-9]+.[0-9]+.[0-9]+
+
+env:
+  HELM_VERSION: v3.4.2
+
+jobs:
+  helm:
+    name: Publish helm chart
+    runs-on: ubuntu-latest
+
+    env:
+      CHART_NAME: nodepool-labels-operator
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Install helm push plugin
+        run: |
+          mkdir -p ~/.helm/plugins \
+          && helm plugin install https://github.com/chartmuseum/helm-push
+
+      - name: Setup helm repositories
+        run: |
+          helm repo add chartmuseum https://kubernetes-charts.banzaicloud.com
+          helm repo update
+
+      - name: Check chart version
+        run: |
+          chart_version=${GITHUB_REF#refs/tags/chart/}
+
+          if ! grep -q -F "version: ${chart_version}" "charts/${CHART_NAME}/Chart.yaml"; then
+              echo "Chart version mismatch; name='${CHART_NAME}', expected_version='${chart_version}'"
+              exit 1
+          fi
+
+      - name: Publish chart
+        run: |
+          helm package "charts/${CHART_NAME}"
+          tgz="$(find '.' -name '*.tgz')"
+          helm push "${tgz}" chartmuseum
+        env:
+          HELM_REPO_USERNAME: ${{ secrets.HELM_REPO_USERNAME }}
+          HELM_REPO_PASSWORD: ${{ secrets.HELM_REPO_PASSWORD }}
