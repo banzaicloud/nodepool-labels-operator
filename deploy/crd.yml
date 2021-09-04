@@ -5,7 +5,6 @@ metadata:
   name: nodepoollabelsets.labels.banzaicloud.io
 spec:
   group: labels.banzaicloud.io
-  version: v1alpha1
   scope: Namespaced
   names:
     kind: NodePoolLabelSet
@@ -13,16 +12,22 @@ spec:
     singular: nodepoollabelset
     shortNames:
       - npls
-  validation:
-    openAPIV3Schema:
-      required: ["spec"]
-      properties:
-        spec:
-          required: [ "labels" ]
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: ["spec"]
           properties:
-            labels:
+            spec:
               type: object
-              additionalProperties:
-                type: string
-              minProperties: 1
-              maxProperties: 1
+              required: [ "labels" ]
+              properties:
+                labels:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  minProperties: 1
+                  maxProperties: 1
+      served: true
+      storage: true
