@@ -25,9 +25,5 @@ spec:
               properties:
                 labels:
                   type: object
-                  additionalProperties:
-                    type: string
-                  minProperties: 1
-                  maxProperties: 1
       served: true
       storage: true
