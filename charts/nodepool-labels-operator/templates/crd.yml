@@ -30,5 +30,7 @@ spec:
               properties:
                 labels:
                   type: object
+                  additionalProperties:
+                    type: string
       served: true
       storage: true
