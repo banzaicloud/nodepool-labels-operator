@@ -39,7 +39,7 @@ jobs:
 
       - name: Check chart version
         run: |
-          chart_version=${GITHUB_REF#refs/tags/chart/}
+            chart_version=${GITHUB_REF#refs/tags/chart/}
 
           if ! grep -q -F "version: ${chart_version}" "charts/${CHART_NAME}/Chart.yaml"; then
               echo "Chart version mismatch; name='${CHART_NAME}', expected_version='${chart_version}'"
