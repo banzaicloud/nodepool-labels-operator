@@ -50,7 +50,7 @@ jobs:
         run: |
           helm package "charts/${CHART_NAME}"
           tgz="$(find '.' -name '*.tgz')"
-          helm push "${tgz}" chartmuseum
+          helm cm-push "${tgz}" chartmuseum
         env:
           HELM_REPO_USERNAME: ${{ secrets.HELM_REPO_USERNAME }}
           HELM_REPO_PASSWORD: ${{ secrets.HELM_REPO_PASSWORD }}
