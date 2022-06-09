@@ -27,7 +27,7 @@ DOCKER_TAG ?= ${VERSION}
 
 # Dependency versions
 GOLANGCI_VERSION = 1.46.2
-GOLANG_VERSION = 1.13
+GOLANG_VERSION = 1.18
 
 # Add the ability to override some variables
 # Use with care
