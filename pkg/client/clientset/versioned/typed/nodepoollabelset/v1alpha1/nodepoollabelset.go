@@ -17,6 +17,8 @@
 package v1alpha1
 
 import (
+	"context"
+
 	v1alpha1 "github.com/banzaicloud/nodepool-labels-operator/pkg/apis/nodepoollabelset/v1alpha1"
 	scheme "github.com/banzaicloud/nodepool-labels-operator/pkg/client/clientset/versioned/scheme"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -66,7 +68,7 @@ func (c *nodePoolLabelSets) Get(name string, options v1.GetOptions) (result *v1a
 		Resource("nodepoollabelsets").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
-		Do().
+		Do(context.TODO()).
 		Into(result)
 	return
 }
@@ -78,7 +80,7 @@ func (c *nodePoolLabelSets) List(opts v1.ListOptions) (result *v1alpha1.NodePool
 		Namespace(c.ns).
 		Resource("nodepoollabelsets").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Do().
+		Do(context.TODO()).
 		Into(result)
 	return
 }
@@ -90,7 +92,7 @@ func (c *nodePoolLabelSets) Watch(opts v1.ListOptions) (watch.Interface, error) 
 		Namespace(c.ns).
 		Resource("nodepoollabelsets").
 		VersionedParams(&opts, scheme.ParameterCodec).
-		Watch()
+		Watch(context.TODO())
 }
 
 // Create takes the representation of a nodePoolLabelSet and creates it.  Returns the server's representation of the nodePoolLabelSet, and an error, if there is any.
@@ -100,7 +102,7 @@ func (c *nodePoolLabelSets) Create(nodePoolLabelSet *v1alpha1.NodePoolLabelSet) 
 		Namespace(c.ns).
 		Resource("nodepoollabelsets").
 		Body(nodePoolLabelSet).
-		Do().
+		Do(context.TODO()).
 		Into(result)
 	return
 }
@@ -113,7 +115,7 @@ func (c *nodePoolLabelSets) Update(nodePoolLabelSet *v1alpha1.NodePoolLabelSet) 
 		Resource("nodepoollabelsets").
 		Name(nodePoolLabelSet.Name).
 		Body(nodePoolLabelSet).
-		Do().
+		Do(context.TODO()).
 		Into(result)
 	return
 }
@@ -125,7 +127,7 @@ func (c *nodePoolLabelSets) Delete(name string, options *v1.DeleteOptions) error
 		Resource("nodepoollabelsets").
 		Name(name).
 		Body(options).
-		Do().
+		Do(context.TODO()).
 		Error()
 }
 
@@ -136,7 +138,7 @@ func (c *nodePoolLabelSets) DeleteCollection(options *v1.DeleteOptions, listOpti
 		Resource("nodepoollabelsets").
 		VersionedParams(&listOptions, scheme.ParameterCodec).
 		Body(options).
-		Do().
+		Do(context.TODO()).
 		Error()
 }
 
@@ -149,7 +151,7 @@ func (c *nodePoolLabelSets) Patch(name string, pt types.PatchType, data []byte, 
 		SubResource(subresources...).
 		Name(name).
 		Body(data).
-		Do().
+		Do(context.TODO()).
 		Into(result)
 	return
 }

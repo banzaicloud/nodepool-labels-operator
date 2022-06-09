@@ -15,6 +15,7 @@
 package controller
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -250,7 +251,7 @@ func (c *Controller) getRelatedNPLSForNode(node *api_v1.Node) (*v1alpha1.NodePoo
 }
 
 func (c *Controller) getNodesOfANodepool(name string) ([]api_v1.Node, error) {
-	nodes, err := c.clientset.CoreV1().Nodes().List(meta_v1.ListOptions{})
+	nodes, err := c.clientset.CoreV1().Nodes().List(context.TODO(), meta_v1.ListOptions{})
 	if err != nil {
 		return nil, errors.WrapIf(err, "could not list nodes")
 	}
