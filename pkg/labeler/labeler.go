@@ -135,7 +135,7 @@ func (l *Labeler) getDesiredLabels(node *api_v1.Node, labelsToSet map[string]str
 			continue
 		}
 		managedLabels = append(managedLabels, label)
-		if nodeLabels[label] == value {
+		if currentValue, ok := nodeLabels[label]; ok && currentValue == value {
 			continue
 		}
 		logger.Info("setting label")
