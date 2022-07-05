@@ -15,12 +15,14 @@
 package labeler
 
 import (
+	"context"
 	"encoding/json"
 	"strings"
 
 	"emperror.dev/emperror"
 	"emperror.dev/errors"
 	api_v1 "k8s.io/api/core/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 	"k8s.io/client-go/kubernetes"
@@ -86,7 +88,7 @@ func (l *Labeler) SyncLabels(node *api_v1.Node, labelsToSet map[string]string) e
 		return errors.WrapIf(err, "could not create two way merge patch")
 	}
 
-	_, err = l.clientset.CoreV1().Nodes().Patch(node.Name, types.MergePatchType, patch)
+	_, err = l.clientset.CoreV1().Nodes().Patch(context.TODO(), node.Name, types.MergePatchType, patch, v1.PatchOptions{})
 	if err != nil {
 		return errors.WrapIf(err, "could not patch node")
 	}
