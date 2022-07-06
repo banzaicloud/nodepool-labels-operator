@@ -3,8 +3,8 @@ module github.com/banzaicloud/nodepool-labels-operator
 go 1.18
 
 require (
-	emperror.dev/emperror v0.21.3
-	emperror.dev/errors v0.4.3
+	emperror.dev/emperror v0.33.0
+	emperror.dev/errors v0.8.0
 	github.com/gin-gonic/gin v1.7.7
 	github.com/sirupsen/logrus v1.2.0
 	github.com/spf13/pflag v1.0.5
@@ -46,8 +46,8 @@ require (
 	github.com/spf13/cast v1.3.0 // indirect
 	github.com/spf13/jwalterweatherman v1.0.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
-	go.uber.org/atomic v1.4.0 // indirect
-	go.uber.org/multierr v1.1.0 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
