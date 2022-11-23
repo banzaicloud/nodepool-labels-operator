@@ -23,7 +23,7 @@ COPY . /${PACKAGE}
 RUN BUILD_DIR='' BINARY_NAME=app make build-release
 
 
-FROM alpine:3.16.0
+FROM alpine:3.17.0
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app /app
 USER nobody:nobody
